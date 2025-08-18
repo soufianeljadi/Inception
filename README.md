@@ -8,5 +8,5 @@ sudo apt-get install docker-compose \
 sudo usermod -aG docker $USER 
 
 # make
-make build 
+make build \
 make up
