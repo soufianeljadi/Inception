@@ -1,26 +1,15 @@
-# Use Debian stable as base image
-FROM debian:bullseye
+FROM debian:bookworm
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    nginx \
-    openssl \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get upgrade -y && apt-get install -y nginx openssl
 
-# Remove default configuration
-RUN rm -rf /etc/nginx/sites-enabled/default
+RUN mkdir -p /etc/nginx/ssl && \
+    openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt -keyout \
+    /etc/nginx/ssl/inception.key -subj "/C=MO/ST=KH/L=KH/O=1337/OU=1337/CN=sel-jadi.42.fr/UID=sel-jadi"
 
-# Copy custom configuration
-COPY conf/nginx.conf /etc/nginx/conf.d/yourlogin.42.fr.conf
-COPY conf/certs/nginx.crt /etc/ssl/certs/nginx.crt
-COPY conf/certs/nginx.key /etc/ssl/certs/nginx.key
-
-# Configure nginx
-RUN ln -sf /dev/stdout /var/log/nginx/access.log \
-    && ln -sf /dev/stderr /var/log/nginx/error.log
+COPY conf/nginx.conf /etc/nginx/nginx.conf
 
 # Expose HTTPS port
-EXPOSE 443
+# EXPOSE 443
 
 # Start nginx in foreground
 CMD ["nginx", "-g", "daemon off;"]
