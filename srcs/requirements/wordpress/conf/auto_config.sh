@@ -32,5 +32,4 @@ else
 	wp user create ${N_W_USER} ${N_W_EMAIL} --user_pass=$N_W_PASS --role=$N_W_ROLE --allow-root
 
 fi
-# FIX HERE: use correct binary name
-exec php-fpm7.4 -F
+exec "$@"

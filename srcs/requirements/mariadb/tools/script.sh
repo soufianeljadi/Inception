@@ -2,9 +2,7 @@
 
 service mariadb start
 
-while ! mysqladmin ping --silent; do
-    sleep 1
-done
+sleep 5
 
 	mysqladmin -u root password "${MYSQLROOTPASSWORD}"
 	mysql -e "CREATE DATABASE IF NOT EXISTS \`${MYSQLDB}\`;"
