@@ -1,15 +1,21 @@
+# Use Debian Bookworm as base image
 FROM debian:bookworm
 
+# Install MariaDB server
 RUN apt-get update && \
-	apt-get upgrade -y && \
-	apt-get install -y mariadb-server
+    apt-get upgrade -y && \
+    apt-get install -y mariadb-server && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-COPY ./tools/script.sh /script.sh
+# Copy custom MariaDB configuration
+COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
+# Copy initialization script
+COPY tools/script.sh /script.sh
 RUN chmod +x /script.sh
 
-# Expose MySQL port
-# EXPOSE 3306
+# Expose default MariaDB port
+EXPOSE 3306
 
-ENTRYPOINT [ "./script.sh" ]
+# Run custom entrypoint script
+ENTRYPOINT ["/script.sh"]

@@ -1,35 +1,63 @@
 #!/bin/bash
+set -e
 
+# Wait for DB service
 sleep 10
-if [ -f /var/www/wordpress/wp-config.php ]; then
-    echo "wordpress already installed"
+
+WP_PATH="/var/www/wordpress"
+
+if [ -f "$WP_PATH/wp-config.php" ]; then
+    echo "✅ WordPress already installed"
 else
-	mkdir -p /var/www/wordpress
+    echo "⬇️ Installing WordPress..."
 
-	cd /var/www/wordpress
+    mkdir -p "$WP_PATH"
+    cd "$WP_PATH"
 
-	rm -rf *
+    # Install wp-cli if not available
+    if ! command -v wp &>/dev/null; then
+        curl -sO https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+        chmod +x wp-cli.phar
+        mv wp-cli.phar /usr/local/bin/wp
+    fi
 
-	curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar  
+    # Download WordPress
+    wp core download --allow-root --path="$WP_PATH"
 
-	chmod +x wp-cli.phar
+    # Generate wp-config.php
+    wp config create \
+        --allow-root \
+        --dbname="${MYSQLDB}" \
+        --dbuser="${MYSQLUSER}" \
+        --dbpass="${MYSQLPASSWORD}" \
+        --dbhost="mariadb:3306" \
+        --path="$WP_PATH"
 
-	mv wp-cli.phar /usr/local/bin/wp
+    # Install WordPress
+    wp core install \
+        --allow-root \
+        --url="$W_DN" \
+        --title="$W_TITLE" \
+        --admin_user="$W_A_N" \
+        --admin_password="$W_A_P" \
+        --admin_email="$W_E_A" \
+        --skip-email \
+        --path="$WP_PATH"
 
-	chmod -R 777 /var/www/wordpress/
+    # Create extra user
+    wp user create \
+        "$N_W_USER" "$N_W_EMAIL" \
+        --user_pass="$N_W_PASS" \
+        --role="$N_W_ROLE" \
+        --allow-root \
+        --path="$WP_PATH"
 
-	wp core download --allow-root
+    # Set permissions (safe)
+    chown -R www-data:www-data "$WP_PATH"
+    find "$WP_PATH" -type d -exec chmod 755 {} \;
+    find "$WP_PATH" -type f -exec chmod 644 {} \;
 
-	mv /var/www/wordpress/wp-config-sample.php  /var/www/wordpress/wp-config.php
-
-	wp config set --allow-root DB_NAME ${MYSQLDB} 
-	wp config set --allow-root DB_USER ${MSQLUSER}
-	wp config set --allow-root DB_PASSWORD ${MYSQLPASSWORD}
-	wp config set --allow-root DB_HOST "mariadb:3306"
-
-	wp core install --url=$W_DN --title=$W_TITLE --admin_user=$W_A_N --admin_password=$W_A_P --admin_email=$W_E_A --skip-email --allow-root 
-
-	wp user create ${N_W_USER} ${N_W_EMAIL} --user_pass=$N_W_PASS --role=$N_W_ROLE --allow-root
-
+    echo "✅ WordPress installation finished!"
 fi
+
 exec "$@"
