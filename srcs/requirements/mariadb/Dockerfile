@@ -4,12 +4,8 @@ RUN apt-get update && \
 	apt-get upgrade -y && \
 	apt-get install -y mariadb-server
 
-COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-COPY ./tools/script.sh /script.sh
+COPY ./tools/db_config.sh /db_config.sh
 
-RUN chmod +x /script.sh
+RUN chmod +x /db_config.sh
 
-# Expose MySQL port
-# EXPOSE 3306
-
-ENTRYPOINT [ "./script.sh" ]
+ENTRYPOINT [ "./db_config.sh" ]

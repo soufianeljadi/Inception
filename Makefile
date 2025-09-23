@@ -16,7 +16,6 @@ clean: down
 fclean: clean
 	docker volume prune --force
 	docker network prune --force
-# 	sudo rm -rf ../../data
 	sudo rm -rf ../data
 
 re: fclean all
