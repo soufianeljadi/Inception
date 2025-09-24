@@ -21,7 +21,7 @@ wp core download --allow-root
 mv /var/www/wordpress/wp-config-sample.php /var/www/wordpress/wp-config.php
 
 wp config set --allow-root DB_NAME ${MYSQLDB}
-wp config set --allow-root DB_USER ${MSQLUSER}
+wp config set --allow-root DB_USER ${MYSQLUSER}
 wp config set --allow-root DB_PASSWORD ${MYSQLPASSWORD}
 wp config set --allow-root DB_HOST "mariadb:3306"
 
@@ -39,4 +39,4 @@ fi
 
 sed -i 's|^listen = /run/php/php8.2-fpm.sock|listen = 9000|' /etc/php/8.2/fpm/pool.d/www.conf
 # run the container command (php-fpm)
-php-fpm8.2 -F
+php-fpm8.2 -F -R
