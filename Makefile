@@ -1,7 +1,7 @@
 all: build up
 
 build:
-	mkdir -p ../data/wordpress ../data/database
+	mkdir -p ../data/wordpress ../data/mariadb
 	docker compose -f ./srcs/docker-compose.yml build
 
 up:

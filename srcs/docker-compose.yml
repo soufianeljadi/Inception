@@ -22,7 +22,7 @@ services:
     depends_on:
       - wordpress
     volumes:
-      - wordpress:/var/www/wordpress
+      - wordpress:/var/www/html
     networks:
       - inception
     restart: on-failure
@@ -34,7 +34,7 @@ services:
     depends_on:
       - mariadb
     volumes:
-      - wordpress:/var/www/wordpress
+      - wordpress:/var/www/html
     env_file :
       - .env
     networks:
@@ -46,14 +46,14 @@ volumes:
   mariadb:
    driver: local
    driver_opts:
-      device: $HOME/data/mariadb
+      device: /home/sel-jadi/Desktop/data/mariadb
       type : none
       o : bind
 
   wordpress:
     driver: local
     driver_opts:
-      device: $HOME/data/wordpress
+      device: /home/sel-jadi/Desktop/data/wordpress
       type : none
       o : bind
 
