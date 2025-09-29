@@ -1,7 +1,8 @@
 all: build up
 
 build:
-	mkdir -p ../data/wordpress ../data/mariadb
+	mkdir -p ~/data/wordpress
+	mkdir -p ~/data/mariadb
 	docker compose -f ./srcs/docker-compose.yml build
 
 up:
@@ -16,7 +17,8 @@ clean: down
 fclean: clean
 	docker volume prune --force
 	docker network prune --force
-	sudo rm -rf ../data
+	sudo rm -rf /home/sel-jadi/data/mariadb
+	sudo rm -rf /home/sel-jadi/data/wordpress
 
 re: fclean all
 

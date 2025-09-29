@@ -46,14 +46,14 @@ volumes:
   mariadb:
    driver: local
    driver_opts:
-      device: /home/sel-jadi/Desktop/data/mariadb
+      device: /home/sel-jadi/data/mariadb
       type : none
       o : bind
 
   wordpress:
     driver: local
     driver_opts:
-      device: /home/sel-jadi/Desktop/data/wordpress
+      device: /home/sel-jadi/data/wordpress
       type : none
       o : bind
 
